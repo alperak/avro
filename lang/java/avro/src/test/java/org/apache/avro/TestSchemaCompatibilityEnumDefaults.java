@@ -127,7 +127,8 @@ public class TestSchemaCompatibilityEnumDefaults {
     byte[] bytes = baos.toByteArray();
     Decoder decoder = DecoderFactory.get().resolvingDecoder(writerSchema, readerSchema,
         DecoderFactory.get().binaryDecoder(bytes, null));
-    DatumReader<Object> datumReader = new GenericDatumReader<>(readerSchema);
+    GenericData model = GenericData.get().setFastReaderEnabled(false);
+    DatumReader<Object> datumReader = new GenericDatumReader<>(readerSchema, readerSchema, model);
     return (GenericRecord) datumReader.read(null, decoder);
   }
 

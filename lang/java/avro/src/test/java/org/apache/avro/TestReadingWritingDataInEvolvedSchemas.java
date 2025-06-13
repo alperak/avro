@@ -17,17 +17,14 @@
  */
 package org.apache.avro;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.stream.Stream;
 
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericData.EnumSymbol;
@@ -234,7 +231,7 @@ public class TestReadingWritingDataInEvolvedSchemas {
     byte[] encoded = encodeGenericBlob(record, encoderType);
     AvroTypeException exception = Assertions.assertThrows(AvroTypeException.class,
         () -> decodeGenericBlob(FLOAT_RECORD, writer, encoded, encoderType));
-    Assertions.assertEquals("Found double, expecting float", exception.getMessage());
+    Assertions.assertEquals("Field \"fieldA\" content mismatch: Found double, expecting float", exception.getMessage());
   }
 
   @ParameterizedTest
@@ -245,7 +242,7 @@ public class TestReadingWritingDataInEvolvedSchemas {
     byte[] encoded = encodeGenericBlob(record, encoderType);
     AvroTypeException exception = Assertions.assertThrows(AvroTypeException.class,
         () -> decodeGenericBlob(LONG_RECORD, writer, encoded, encoderType));
-    Assertions.assertEquals("Found float, expecting long", exception.getMessage());
+    Assertions.assertEquals("Field \"fieldA\" content mismatch: Found float, expecting long", exception.getMessage());
   }
 
   @ParameterizedTest
@@ -256,7 +253,7 @@ public class TestReadingWritingDataInEvolvedSchemas {
     byte[] encoded = encodeGenericBlob(record, encoderType);
     AvroTypeException exception = Assertions.assertThrows(AvroTypeException.class,
         () -> decodeGenericBlob(INT_RECORD, writer, encoded, encoderType));
-    Assertions.assertEquals("Found long, expecting int", exception.getMessage());
+    Assertions.assertEquals("Field \"fieldA\" content mismatch: Found long, expecting int", exception.getMessage());
   }
 
   @ParameterizedTest
@@ -344,7 +341,7 @@ public class TestReadingWritingDataInEvolvedSchemas {
 
     AvroTypeException exception = Assertions.assertThrows(AvroTypeException.class,
         () -> decodeGenericBlob(ENUM_AB_RECORD, writer, encoded, encoderType));
-    Assertions.assertEquals("No match for C", exception.getMessage());
+    Assertions.assertEquals("Field \"fieldA\" content mismatch: No match for C", exception.getMessage());
   }
 
   @ParameterizedTest
@@ -438,7 +435,9 @@ public class TestReadingWritingDataInEvolvedSchemas {
     if (blob == null) {
       return null;
     }
-    GenericDatumReader<Record> reader = new GenericDatumReader<>();
+    GenericData model = GenericData.get();
+    model.setFastReaderEnabled(false);
+    GenericDatumReader<Record> reader = new GenericDatumReader<>(null, null, model);
     reader.setExpected(expectedSchema);
     reader.setSchema(schemaOfBlob);
     Decoder decoder = encoderType == EncoderType.BINARY ? DecoderFactory.get().binaryDecoder(blob, null)

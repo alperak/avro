@@ -77,7 +77,8 @@ public class TestUnionError {
     InputStream ins = new ByteArrayInputStream(outs.toByteArray());
     BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(ins, null);
 
-    GenericDatumReader<GenericRecord> datumReader = new GenericDatumReader<>(writerSchema, readerSchema);
+    GenericData model = GenericData.get().setFastReaderEnabled(false);
+    GenericDatumReader<GenericRecord> datumReader = new GenericDatumReader<>(writerSchema, readerSchema, model);
     AvroTypeException avroException = assertThrows(AvroTypeException.class, () -> datumReader.read(null, decoder));
     assertEquals("Field \"c\" content mismatch: Found B, expecting union[A, float]", avroException.getMessage());
   }
