@@ -47,7 +47,7 @@ dist() (
   )
   virtualenv="$(mktemp -d)"
   python3 -m venv "$virtualenv"
-  "$virtualenv/bin/python3" -m pip install build
+  "$virtualenv/bin/python3" -m pip --upgrade pip install build
   "$virtualenv/bin/python3" -m build --outdir "$destination"
 )
 
@@ -102,7 +102,7 @@ _tox() {
     echo 'Your experience will improve if you install tox'
     virtualenv="$(mktemp -d)"
     python3 -m venv "$virtualenv"
-    "$virtualenv/bin/python3" -m pip install tox
+    "$virtualenv/bin/python3" -m pip --upgrade pip install tox
     "$virtualenv/bin/tox" "$@"
   fi
 }
